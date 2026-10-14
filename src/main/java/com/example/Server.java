@@ -12,7 +12,7 @@ public class Server {
             do{
                 Socket socket = server.accept();
                 System.out.println("Nuovo client connesso al server");
-
+                
                 Thread clientThread = new Thread(new ClientHandler(socket, mioCalcolatore));
                 clientThread.start();
             }while (true);
