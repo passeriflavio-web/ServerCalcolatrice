@@ -25,11 +25,6 @@ public class Calcolatore {
             default:
                 break;
         }
-        
-        
-        
-        
-        
         return Ans;
     }
 

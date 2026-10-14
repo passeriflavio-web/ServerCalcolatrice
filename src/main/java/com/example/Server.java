@@ -4,29 +4,21 @@ import java.io.*;
 import java.net.*;
 
 public class Server {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Server in ascolto sulla porta 3000...");
-        
+    public static void main(String[] args) {
         Calcolatore mioCalcolatore = new Calcolatore();
+        System.out.println("Server in ascolto sulla porta 3000");
+       
+        try (ServerSocket server = new ServerSocket(3000)) {
+            do{
+                Socket socket = server.accept();
+                System.out.println("Nuovo client connesso al server");
 
-        try (ServerSocket server = new ServerSocket(3000);
-             Socket socket = server.accept();
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-             System.out.println("Client connesso al server");
-            
-             String riga;
-            double risposta;
-            while ((riga = in.readLine()) != null) {
-                
-                if (riga.trim().equalsIgnoreCase("exit")) break;
-                String[] TmpVal = riga.split(";");
+                Thread clientThread = new Thread(new ClientHandler(socket, mioCalcolatore));
+                clientThread.start();
+            }while (true);
 
-                risposta = mioCalcolatore.Calcolatrice(TmpVal);
-                  
-                out.println(risposta); 
-            }
+        } catch (IOException e) {
+            System.err.println("Errore nel server: " + e.getMessage());
         }
-        System.out.println("Server chiuso.");
     }
 }
